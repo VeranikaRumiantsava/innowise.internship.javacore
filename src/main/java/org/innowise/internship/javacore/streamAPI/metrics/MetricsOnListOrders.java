@@ -14,8 +14,10 @@ import java.util.stream.Stream;
 
 final public class MetricsOnListOrders {
     public static List<String> uniqueCities(List<Order> orders){
-        if (orders == null || orders.isEmpty())
+        if (orders == null || orders.isEmpty()) {
             return Collections.emptyList();
+        }
+
         return orders.stream()
                 .filter(Objects::nonNull)
                 .map(order -> order.getCustomer().getCity())
@@ -24,8 +26,10 @@ final public class MetricsOnListOrders {
     }
 
     public static double totalIncomeCompletedOrders(List<Order> orders){
-        if (orders == null || orders.isEmpty())
+        if (orders == null || orders.isEmpty()) {
             return 0;
+        }
+
         return orders.stream().
                 filter(Objects::nonNull).
                 filter(order -> order.getStatus() == OrderStatus.DELIVERED).
@@ -35,9 +39,10 @@ final public class MetricsOnListOrders {
     }
 
     public static String mostPopularProduct(List<Order> orders){
-        if (orders == null || orders.isEmpty())
+        if (orders == null || orders.isEmpty()) {
             return null;
-        //filter by status?
+        }
+
         Stream<Order> ordersStream = orders.stream();
         return ordersStream
                 .filter(Objects::nonNull)
@@ -50,8 +55,10 @@ final public class MetricsOnListOrders {
     }
 
     public static double averageCheckDeliveredOrders(List<Order> orders){
-        if (orders == null || orders.isEmpty())
+        if (orders == null || orders.isEmpty()) {
             return 0;
+        }
+
         return orders.stream()
                 .filter(Objects::nonNull)
                 .filter(order -> order.getStatus() == OrderStatus.DELIVERED)
@@ -63,8 +70,10 @@ final public class MetricsOnListOrders {
     }
 
     public static List<Customer> customersWithMoreThanFiveOrders(List<Order> orders){
-        if (orders == null || orders.isEmpty())
+        if (orders == null || orders.isEmpty()) {
             return Collections.emptyList();
+        }
+
         return orders.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(Order::getCustomer, Collectors.counting()))
