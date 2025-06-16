@@ -5,12 +5,10 @@ public class LinkedList<T>{
     private Node<T> tail = null;
     private int size = 0;
 
-    //1. size()
     public int size() {
         return this.size;
     }
 
-    //2. addFirst()
     public void addFirst(T element) {
         Node<T> newNode = new Node<>(element);
 
@@ -25,7 +23,6 @@ public class LinkedList<T>{
         ++size;
     }
 
-    //3. addLast()
     public void addLast(T element) {
         Node<T> newNode = new Node<>(element);
 
@@ -40,17 +37,17 @@ public class LinkedList<T>{
         ++size;
     }
 
-    //4. add()
     public void add(int index, T element) {
-        if (index < 0 || index > size)
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (index == 0){
+        if (index == 0) {
             addFirst(element);
             return;
         }
 
-        if (index == this.size){
+        if (index == this.size) {
             addLast(element);
             return;
         }
@@ -64,35 +61,34 @@ public class LinkedList<T>{
         ++size;
     }
 
-    //5. getFirst()
     public T getFirst() {
         return (head == null) ? null : this.head.getItem();
     }
 
-    //6. getLast()
     public T getLast() {
         return (head == null) ? null : this.tail.getItem();
     }
 
-    //7. get(index)
-    //половинить?
     public T get(int index) {
         return getNode(index).getItem();
     }
 
-    private Node<T> getNode(int index){
-        if (index<0 || index>=this.size)
+    private Node<T> getNode(int index) {
+        if (index<0 || index>=this.size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (index==0)
+        if (index == 0) {
             return this.head;
+        }
 
         Node<T> current;
         int counter;
 
-        if (index<this.size/2){
+        if (index<this.size/2) {
             counter = 0;
             current = this.head;
+
             while (counter < index) {
                 current = current.getNext();
                 ++counter;
@@ -111,12 +107,12 @@ public class LinkedList<T>{
         return current;
     }
 
-    //8. removeFirst()
-    public void removeFirst(){
-        if (head == null)
+    public void removeFirst() {
+        if (head == null) {
             return;
+        }
 
-        if (head.getNext() == null){
+        if (head.getNext() == null) {
             head = null;
             tail = null;
         }
@@ -127,12 +123,12 @@ public class LinkedList<T>{
         --size;
     }
 
-    //9. removeLast()
-    public void removeLast(){
-        if (head == null)
+    public void removeLast() {
+        if (head == null) {
             return;
+        }
 
-        if (tail.getPrev() == null){
+        if (tail.getPrev() == null) {
             head = null;
             tail = null;
         }
@@ -143,12 +139,12 @@ public class LinkedList<T>{
         --size;
     }
 
-    //10. remove(index)
-    public void remove(int index){
-        if (index<0 || index>=this.size)
+    public void remove(int index) {
+        if (index<0 || index>=this.size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (index==0) {
+        if (index == 0) {
             removeFirst();
             return;
         }
@@ -165,8 +161,8 @@ public class LinkedList<T>{
         --size;
     }
 
-    public boolean isEmpty(){
-        return head==null;
+    public boolean isEmpty() {
+        return head == null;
     }
 
     @Override
