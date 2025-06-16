@@ -2,18 +2,29 @@ package org.innowise.internship.javacore.skynet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class Fraction implements Runnable{
     String name;
     int countRobots;
     List<Part> parts;
     Factory factory;
+    CyclicBarrier barrier;
 
     public Fraction(String name, Factory factory) {
         this.name = name;
         this.countRobots = 0;
         this.parts = new ArrayList<Part>();
         this.factory = factory;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setBarrier(CyclicBarrier barrier) {
+        this.barrier = barrier;
     }
 
     public void tryToGetNewParts() {
@@ -87,6 +98,11 @@ public class Fraction implements Runnable{
 
     @Override
     public void run() {
+        try {
+            barrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            Thread.currentThread().interrupt();
+        }
         tryToGetNewParts();
     }
 }

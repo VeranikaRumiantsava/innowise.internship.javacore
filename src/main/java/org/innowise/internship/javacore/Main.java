@@ -3,18 +3,27 @@ package org.innowise.internship.javacore;
 import org.innowise.internship.javacore.skynet.Fraction;
 import org.innowise.internship.javacore.skynet.Factory;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        Factory factory = new Factory();
-        Fraction world = new Fraction("world", factory);
-        Fraction wednesday = new Fraction("wednesday", factory);
 
-        try (ExecutorService fractions = Executors.newFixedThreadPool(2);
+        Factory factory = new Factory();
+
+        List<Fraction> fractionsList = new ArrayList<Fraction>();
+
+        fractionsList.add(new Fraction("world", factory));
+        fractionsList.add(new Fraction("wednesday", factory));
+
+        CyclicBarrier barrier = new CyclicBarrier(fractionsList.size());
+        for (Fraction fraction : fractionsList) {
+            fraction.setBarrier(barrier);
+        }
+
+        try (ExecutorService fractions = Executors.newFixedThreadPool(fractionsList.size());
              ExecutorService factoryExecutor = Executors.newSingleThreadExecutor()) {
 
             for (int i = 0; i < 100; ++i) {
@@ -22,21 +31,21 @@ public class Main {
                 Future<?> factoryWork = factoryExecutor.submit(factory);
                 factoryWork.get();
 
-                Future<?> firstFraction;
-                Future<?> secondFraction;
+                List<Future<?>> futureList = new ArrayList<>();
 
-                if (i % 2 == 0) {
-                    firstFraction = fractions.submit(world);
-                    secondFraction = fractions.submit(wednesday);
-                } else {
-                    firstFraction = fractions.submit(wednesday);
-                    secondFraction = fractions.submit(world);
+                for (Fraction fraction : fractionsList) {
+                    futureList.add(fractions.submit(fraction));
                 }
-                firstFraction.get();
-                secondFraction.get();
+
+                for (Future<?> future : futureList) {
+                    future.get();
+                }
             }
         }
 
-        System.out.println(world.getCountRobots() > wednesday.getCountRobots() ? "world won!" : "wednesday won!");
+        System.out.println(fractionsList.stream()
+                .max(Comparator.comparing(Fraction::getCountRobots))
+                .map(Fraction::getName)
+                .get());
     }
 }
